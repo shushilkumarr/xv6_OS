@@ -26,8 +26,8 @@ main(int argc, char *argv[])
       wait ();
    } else {   // child
       printf(1, "Child %d created\n",getpid() );
-      for ( z = 0; z < 8000000.0; z += 10.01 )
-         x =  x + 3.14 * 89.64;   // useless calculations to consume CPU time
+      /*for ( z = 0; z < 8000000.0; z += 10.01 )
+         x =  x + 3.14 * 89.64;   // useless calculations to consume CPU time*/
       break;
     }
   }
