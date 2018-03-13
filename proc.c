@@ -88,7 +88,7 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
-
+  p->priority = 10;
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -495,6 +495,48 @@ kill(int pid)
   release(&ptable.lock);
   return -1;
 }
+//function to change priority
+int
+chpr( int pid, int priority )
+{
+  struct proc *p;
+  
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->pid == pid ) {
+        p->priority = priority;
+        break;
+    }
+  }
+  release(&ptable.lock);
+
+  return pid;
+}
+
+//function for cps()
+int
+cps()
+{
+  struct proc *p;
+  
+  // Enable interrupts on this processor.
+  sti();
+
+    // Loop over process table looking for process with pid.
+  acquire(&ptable.lock);
+  cprintf("name \t pid \t state \n");
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      if ( p->state == SLEEPING )
+        cprintf("%s \t %d  \t SLEEPING \n ", p->name, p->pid );
+      else if ( p->state == RUNNING )
+        cprintf("%s \t %d  \t RUNNING \n ", p->name, p->pid );
+  }
+  
+  release(&ptable.lock);
+  
+  return 22;
+}
+
 
 //PAGEBREAK: 36
 // Print a process listing to console.  For debugging.
